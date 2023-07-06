@@ -15,3 +15,17 @@ std::string ws2s(const std::wstring& wstr)
 
     return converterX.to_bytes(wstr);
 }
+
+int B2LEndianInt(void* ptr)
+{
+	const char* point = reinterpret_cast<const char*>(ptr);
+	char lendian[4] = {};
+	int value = 0;
+	int max = 4;
+	for (int i = 0; i < max; i++)
+	{
+		lendian[(max-1)-i] = point[i];
+	}
+	value = static_cast<int>(*reinterpret_cast<int*>(lendian));
+	return value;
+}

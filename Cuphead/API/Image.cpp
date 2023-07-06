@@ -1,6 +1,8 @@
 #include "Image.h"
 #include "Application.h"
 #include "Resources.h"
+
+
 extern yeram_client::Application application;
 namespace yeram_client
 {
@@ -51,27 +53,7 @@ namespace yeram_client
 		image = new Image();
 		HDC MainHDC = application.GetHDC();
 
-		/*
-		roka::file::FileSystem file;
-		roka::file::FileInfo* info=new roka::file::FileInfo();
-		info->name = "test";
-		info->buffer = (char*)_bin_data;
-		info->length = 54 + _width * _height * 3 + _height;
-		file.SaveFile("..\\Resources",info);
-
-		BYTE* tempBuffer = new BYTE[_width * _height * 3];
-		int index_ = 0;
-		int temp_point = 54;
-		for (int h = 0; h < _height; ++h)
-		{
-			for (int w = 0; w < _width; ++w)
-			{
-				tempBuffer[index_++] = _bin_data[temp_point];
-			}
-			temp_point++;
-		}
-		*/
-
+		
 		BITMAPINFO bmpInfo;
 
 		bmpInfo.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
@@ -87,7 +69,6 @@ namespace yeram_client
 		//bmpInfo.bmiHeader.biClrImportant = 0;
 
 
-
 		BYTE* point = _bin_data;
 		point += 10;
 		int byteOffset = 0;
@@ -98,10 +79,10 @@ namespace yeram_client
 
 
 		BYTE* bits;
-		
+
 		int length24 = _width * _height * 3;
 		int length32 = _width * _height * 4;
-		
+
 		image->mHdc = CreateCompatibleDC(MainHDC);
 		image->mBitmap = CreateDIBSection(image->mHdc, (BITMAPINFO*)&bmpInfo, DIB_RGB_COLORS, (void**)&bits, NULL, 0);
 		BITMAPINFO test = {};
@@ -109,7 +90,7 @@ namespace yeram_client
 		memset(bits, 255, bmpInfo.bmiHeader.biSizeImage);
 
 		int index = 0;
-		for (int i = 0; i < bmpInfo.bmiHeader.biSizeImage-2; i += 3)
+		for (int i = 0; i < bmpInfo.bmiHeader.biSizeImage - 2; i += 3)
 		{
 			if (point[i] == 0 && point[i + 1] == 0 && point[i + 2] == 0)
 			{
@@ -125,7 +106,7 @@ namespace yeram_client
 			}
 		}
 
-		//memcpy(bits, point, length);
+		//memcpy(bits, point, length24);
 
 		HBITMAP oldBitmap = (HBITMAP)SelectObject(image->mHdc, image->mBitmap);
 		DeleteObject(oldBitmap);
@@ -181,5 +162,115 @@ namespace yeram_client
 		HBITMAP oldBitmap = (HBITMAP)SelectObject(mHdc, mBitmap);
 		DeleteObject(oldBitmap);
 		return S_OK;
+	}
+	bool Image::CheckPNG(BYTE* _bin_data)
+	{
+		const BYTE* point = _bin_data;
+		bool flag = false;
+
+		//png header 504E47 은 메모리에서 보면 png 로 표기됨(ascii).
+		if (point[0] == 0x89 && point[1] == 0x50 && point[2] == 0x4E && point[3] == 0x47
+			&& point[4] == 0x0D && point[5] == 0x0A && point[6] == 0x1A && point[7] == 0x0A)
+			return true;
+
+		return false;
+	}
+	BMPInfo* Image::PNG2BMP(BYTE* _bin_data)
+	{
+		//BMPInfo* info = new BMPInfo();
+		//const BYTE* point = _bin_data;
+		//point += 16;
+		//int test = 1;
+		//info->width = B2LEndianInt((void*)point);
+		//point += sizeof(UINT);
+		//info->height = B2LEndianInt((void*)point);
+		//point += sizeof(UINT);
+		//BYTE bitdepth = 0;
+		//memcpy(&bitdepth, point, 1);
+		//point += 1;
+		//BYTE colorType = 0;
+		//memcpy(&colorType, point, 1);
+		//point += 2;
+		//BYTE filter = 0;
+		//memcpy(&filter, point, 1);
+
+		//if (colorType == 2)
+		//	info->channel = 3;
+		//else if (colorType == 6)
+		//	info->channel = 4;
+
+		//char ChunkType[5] = {};
+		////idat pos find
+		//point = _bin_data + 8/*header size*/ + 21/*ihdr size*/ + 4/*crc size*/;
+		//int chunklength = 0;
+		//while (1)
+		//{
+		//	chunklength = B2LEndianInt((void*)point);
+		//	point += sizeof(int);
+		//	memcpy(ChunkType, point, 4);
+		//	point += 4;
+
+		//	if (strcmp(ChunkType, "IDAT") == 0)
+		//	{
+		//		break;
+		//	}
+		//	point += chunklength + 4/*crc size*/;
+		//}
+		//
+		//
+		//z_stream stream;
+		//stream.zalloc = Z_NULL;
+		//stream.zfree = Z_NULL;
+		//stream.opaque = Z_NULL;
+
+		//stream.avail_in = static_cast<uInt>(chunklength);
+		//stream.next_in = const_cast<Bytef*>(point);
+
+
+		//size_t bytesPerPixel = 0;
+		//if (colorType == 0) {
+		//	bytesPerPixel = bitdepth / 8;  // Grayscale
+		//}
+		//else if (colorType == 2) {
+		//	bytesPerPixel = 3 * bitdepth / 8;  // RGB
+		//}
+		//else if (colorType == 3) {
+		//	bytesPerPixel = bitdepth / 8;  // Palette (indexed color)
+		//}
+		//else if (colorType == 4) {
+		//	bytesPerPixel = 2 * bitdepth / 8;  // Grayscale with alpha
+		//}
+		//else if (colorType == 6) {
+		//	bytesPerPixel = 4 * bitdepth / 8;  // RGBA
+		//}
+
+		//int outsize = (info->width * bytesPerPixel+1) * info->height;
+		//
+		//info->data = new BYTE[outsize];
+		//memset(info->data, 0, outsize);
+		//stream.avail_out = static_cast<uInt>(outsize);
+		//stream.next_out = info->data;
+
+		//int ret = inflateInit(&stream);
+		//if (ret != Z_OK)
+		//{
+		//	//err;
+		//	return nullptr;
+		//}
+
+		////ret = uncompress(info->data, (uLongf*)&outsize, point, chunklength);
+		//ret = inflate(&stream, Z_FINISH);
+		//if (ret != Z_STREAM_END) {
+		//	std::cerr << "Failed to decompress IDAT chunk: " << ret << std::endl;
+		//	return nullptr;
+		//}
+
+		//inflateEnd(&stream);
+		//return info;
+		return nullptr;
+	}
+
+	void Image::BMPAlphaSet(BYTE* _bin_data, COLORREF alpha)
+	{
 	}
 }

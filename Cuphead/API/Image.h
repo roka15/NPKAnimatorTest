@@ -1,8 +1,29 @@
 #pragma once
 #include "My_Resource.h"
+#ifdef _DEBUG
+#pragma comment(lib,"..\\PngLib\\lib\\Debug\\Pnglib.lib")
+#pragma comment(lib,"..\\PngLib\\lib\\Debug\\Zlib.lib")
+
+#else
+#pragma comment(lib,"..\\External\\PngLib\\lib\\Release\\Zlib.lib")
+#pragma comment(lib,"..\\External\\PngLib\\lib\\Release\\Pnglib.lib")
+#endif
+
+#include "../PngLib/include/zlib.h"
+#include "../PngLib/include/png.h"
+
+
+
 namespace yeram_client
 {
-	
+	struct BMPInfo
+	{
+		~BMPInfo() { delete data; }
+		UINT width;
+		UINT height;
+		UINT channel;
+		BYTE* data;
+	};
 	class Image:public My_Resource
 	{
 	public:
@@ -19,6 +40,9 @@ namespace yeram_client
 		UINT GetWidth()const { return mWidth; }
 		UINT GetHeight()const { return mHeight; }
 		
+		static bool CheckPNG(BYTE* _bin_data);
+		static BMPInfo* PNG2BMP(BYTE* _bin_data);
+		static void BMPAlphaSet(BYTE* _bin_data, COLORREF alpha = RGB(255, 0, 255));
 	private:
 		HBITMAP mBitmap;
 		HDC mHdc;

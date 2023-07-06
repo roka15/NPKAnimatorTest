@@ -214,6 +214,7 @@
     </ClInclude>
     <ClInclude Include="CommonFunc.h" />
     <ClInclude Include="Arsmagna.h" />
+    <ClInclude Include="AniTest.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -320,6 +321,7 @@
     </ClCompile>
     <ClCompile Include="CommonFunc.cpp" />
     <ClCompile Include="Arsmagna.cpp" />
+    <ClCompile Include="AniTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="API.rc">

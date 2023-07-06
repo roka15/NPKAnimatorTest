@@ -14,5 +14,11 @@ std::wstring format_string(const std::wstring& format, Args ... args)
     return std::wstring(buffer.get(), buffer.get() + size - 1);
 }
 
+class CommonFunc
+{
+};
+
+
+int B2LEndianInt(void* ptr);
 
 

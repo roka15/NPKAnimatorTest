@@ -14,6 +14,7 @@
 #include "ObjectPool.h"
 #include "Skill.h"
 #include "Arsmagna.h"
+#include "AniTest.h"
 extern yeram_client::Application application;
 
 yeram_client::TitleScene::TitleScene()
@@ -69,19 +70,21 @@ void yeram_client::TitleScene::OnEnter()
 {
 	Vector2 size = application.GetWindowSize();
 
-	Image* image = Resources::Load<Image>(L"bmpimage",L"..\\Resources\\0000.bmp");
 	SkillInfo info = {};
-	info.ani_path = L"..\\Resources\\ImagePackage\\arsmagna.npk";
+	info.ani_path = L"..\\Resources\\ImagePackage\\npc_seria.npk";
 	info.offset = Vector2::Zero;
 	info.dutation = 0.05f;
     
 	player=std::make_shared<GameObject>();
 	Transform* tf = player->GetComponent<Transform>();
 	tf->SetPos(Vector2{ 800.0f,650.0f });
-	skill = new Arsmagna();
+	/*skill = new Arsmagna();
 	skill->SetInfo(info,player.get());
-	skill->LoadResources();
+	skill->LoadResources();*/
 	
+	skill = new AniTest();
+	skill->SetInfo(info, player.get());
+	skill->LoadResources();
 
 	AddGameObject(player, ELayerType::BackObject);
 	Scene::OnEnter();

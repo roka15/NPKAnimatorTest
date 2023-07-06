@@ -155,7 +155,7 @@ namespace yeram_client
 
 		std::wstring fileName = s2ws(csvInfo->name);
 		std::wstring ResultKey = fileName + aniName;
-		std::pair canvas_size = csvInfo->base_size;
+		std::pair canvas_size = csvInfo->canvas[0];
 		int imageCount = endIndex == startIndex? packInfo->binbuf.size():endIndex-startIndex;
 		mSpriteSheet = Image::Create(ResultKey, canvas_size.first * imageCount, canvas_size.second);
 

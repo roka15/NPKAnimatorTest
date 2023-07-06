@@ -23,7 +23,7 @@ namespace yeram_client
 		imagename = s2ws(pack->binbuf[2]->name);
 		filename = s2ws(key) + imagename;
 		sprite = background_a3->AddComponent<SpriteRenderer>();
-		sprite->CreateImage(filename, imagename, Vector2(csv->size[2]), Vector2(csv->pos[2]), Vector2(csv->base_size), (BYTE*)pack->binbuf[2]->buffer);
+		sprite->CreateImage(filename, imagename, Vector2(csv->size[2]), Vector2(csv->pos[2]), Vector2(csv->canvas[0]), (BYTE*)pack->binbuf[2]->buffer);
 		sprite->SetRenderType(ERenderType::TransParentBlt);
 		sprite->SetActive(false);
 		mSprites.insert(std::make_pair(filename, sprite));
@@ -40,7 +40,7 @@ namespace yeram_client
 		imagename = s2ws(pack->binbuf[1]->name);
 		filename = s2ws(key) + imagename;
 		sprite = background_a2->AddComponent<SpriteRenderer>();
-		sprite->CreateImage(filename, imagename, Vector2(csv->size[1]), Vector2(csv->pos[1]), Vector2(csv->base_size), (BYTE*)pack->binbuf[1]->buffer);
+		sprite->CreateImage(filename, imagename, Vector2(csv->size[1]), Vector2(csv->pos[1]), Vector2(csv->canvas[0]), (BYTE*)pack->binbuf[1]->buffer);
 		sprite->SetRenderType(ERenderType::TransParentBlt);
 		sprite->SetActive(false);
 		mSprites.insert(std::make_pair(filename, sprite));
@@ -58,7 +58,7 @@ namespace yeram_client
 		filename = s2ws(key) + imagename;;
 
 		sprite = background_a1->AddComponent<SpriteRenderer>();
-		sprite->CreateImage(filename, imagename, Vector2(csv->size[0]), Vector2(csv->pos[0]), Vector2(csv->base_size), (BYTE*)pack->binbuf[0]->buffer);
+		sprite->CreateImage(filename, imagename, Vector2(csv->size[0]), Vector2(csv->pos[0]), Vector2(csv->canvas[0]), (BYTE*)pack->binbuf[0]->buffer);
 		sprite->SetRenderType(ERenderType::TransParentBlt);
 		sprite->SetActive(false);
 		mSprites.insert(std::make_pair(filename, sprite));

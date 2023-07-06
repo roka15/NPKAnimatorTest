@@ -31,7 +31,7 @@
 #pragma comment(lib, "winmm.lib")
 #pragma comment(lib, "dsound.lib")
 
-#include "FileSystem.h"
+#include "..\\DLL\\FileSystem.h"
 #pragma comment(lib,"..\\DLL\\NPKSystem.lib")
 
 

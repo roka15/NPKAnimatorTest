@@ -1,10 +1,10 @@
 #pragma once
-#include <iostream>
+
 #include <queue>
 #include <map>
 #include <filesystem>
 #include <fstream>
-using namespace std;
+
 
 #ifdef CREATEDLL_EXPORTS
 #define MYDLL_DECLSPEC __declspec(dllexport)
@@ -14,6 +14,9 @@ using namespace std;
 
 namespace roka::file
 {
+
+	MYDLL_DECLSPEC std::wstring s2ws(const std::string& str);
+	MYDLL_DECLSPEC std::string ws2s(const std::wstring& wstr);
 	//1. 이미지 바이너리 읽고 쓰기 부터 테스트
 	//2. 이미지 버퍼 앞에 text 정보 쓰기
 	//3.filebuffers 내용들 합쳐서 bin 파일로 저장.
@@ -22,16 +25,18 @@ namespace roka::file
 	{
 		FileInfo() :length(0), buffer(nullptr) {};
 		FileInfo(std::string _name, size_t _len, char* _buffer) :name(_name), length(_len), buffer(_buffer) {};
-		~FileInfo() { delete[] buffer; }
+		~FileInfo() { delete buffer; }
 		std::string name;
 		std::string parent_path;
 		size_t length;
 		char* buffer;
 	};
-	struct MYDLL_DECLSPEC CSVInfo
+	struct CSVInfo
 	{
 		std::string name;
+		std::vector<std::pair<int, int>> canvas;
 		std::vector<std::pair<int, int>> pos;
+		std::vector<std::pair<int, int>> size;
 	};
 	struct MYDLL_DECLSPEC PackInfo
 	{
@@ -65,7 +70,7 @@ namespace roka::file
 		FileInfo* GetLoadFile();
 		virtual void Release();
 	protected:
-		queue<FileInfo*> mFileBuffers;
+		std::queue<FileInfo*> mFileBuffers;
 		int mAllLength;
 	};
 
@@ -73,11 +78,10 @@ namespace roka::file
 	class MYDLL_DECLSPEC NPKSystem :public FileSystem
 	{
 	public:
-		NPKSystem() :mCsvLine(0), mCSVBuffers(nullptr) {}
+		NPKSystem() :mCsvLine(0), mCSVBuffers(nullptr) {};
 		virtual ~NPKSystem() { Release(); }
 		void SavePacks(std::string _save_path, std::map<std::string, PackInfo*> _pack);
 		const FileInfo* CreateImagePackage(std::string _read_path, std::string _road_format);
-		void ReadImagePackage(std::string _path, std::map<std::string, CSVInfo*>& _csvmap, std::map<std::string, PackInfo*>& _packmap);
 		size_t ReadImagePackage(const char* _buf, std::map<std::string, CSVInfo*>& _csvmap, std::map<std::string, PackInfo*>& _packmap);
 		void CreateNPK(std::string _image_path, std::string _txt_path, std::string _format, std::string _save_path);
 		void ReadNPK(std::string _path, std::map<std::string, CSVInfo*>& _csvmap, std::map<std::string, PackInfo*>& _packmap);
@@ -85,8 +89,9 @@ namespace roka::file
 		FileInfo* CreateCSVLineBuffer();
 		size_t ReadCSVLine(const char* buf, std::map<std::string, CSVInfo*>& _csvmap, std::string& _out_str);
 		virtual void Release()override;
+		void Clear();
 	private:
-		queue<FileInfo*> mImagePackBuffers;
+		std::queue<FileInfo*> mImagePackBuffers;
 		FileInfo* mCSVBuffers;
 		int mCsvLine;
 	};
